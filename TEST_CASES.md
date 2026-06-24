@@ -10,68 +10,74 @@
 
 输入：
 
-```json
-{}
+```text
+A weight=5 enabled=true
+B weight=3 enabled=true
+C weight=2 enabled=true
 ```
+调用 route() 10000 次
 
 期望输出：
 
-```json
-{}
-```
+A、B、C 的选择比例大致接近 5:3:2
+允许一定随机误差
 
 验证点：
 
-- 核心功能可以正常完成。
+- 验证加权路由的核心行为。
 
 ## 用例 2：边界场景
 
 输入：
 
-```json
-{}
+```text
+A weight=10 enabled=false
+B weight=1 enabled=true
 ```
 
 期望输出：
 
-```json
-{}
-```
+route() 永远返回 B
+
 
 验证点：
 
-- 边界值处理正确。
+- 验证不可用节点必须被过滤。
+
 
 ## 用例 3：异常场景
 
 输入：
 
-```json
-{}
+```text
+A weight=0 enabled=true
+B weight=5 enabled=true
 ```
 
 期望输出：
+
+route() 永远返回 B
 
 - 返回明确错误，或者抛出明确异常。
 
 验证点：
 
-- 非法输入不会导致未知异常。
+- 验证 0 权重节点不会被选中。
 
 ## 用例 4：业务陷阱
 
 输入：
 
-```json
-{}
+```text
+A weight=0 enabled=true
+B weight=3 enabled=false
 ```
 
 期望输出：
 
-```json
-{}
-```
+抛出 IllegalStateException
+
 
 验证点：
 
-- 覆盖最容易被 AI 或开发者写错的业务规则。
+- 异常边界。
