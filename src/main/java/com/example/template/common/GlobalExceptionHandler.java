@@ -21,6 +21,12 @@ public class GlobalExceptionHandler {
         return ApiResponse.fail(ex.getMessage());
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResponse<Void> handleIllegalStateException(IllegalStateException ex) {
+        return ApiResponse.fail(ex.getMessage());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponse<Void> handleValidationException(MethodArgumentNotValidException ex) {
