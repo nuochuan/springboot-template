@@ -119,6 +119,15 @@ CLASSPATH="\\\"\\\""
 
 # Determine the Java command to use to start the JVM.
 if [ -n "$JAVA_HOME" ] ; then
+    if echo "$JAVA_HOME" | grep -q "JavaAppletPlugin.plugin" || [ ! -x "$JAVA_HOME/bin/javac" ] ; then
+        if [ -x "/usr/libexec/java_home" ] ; then
+            JAVA_HOME=`/usr/libexec/java_home -v 1.8.0_181 2>/dev/null`
+        fi
+    fi
+    if [ ! -x "$JAVA_HOME/bin/javac" ] && command -v javac >/dev/null 2>&1; then
+        JAVAC_PATH=`command -v javac`
+        JAVA_HOME=`cd "$(dirname "$JAVAC_PATH")/.." && pwd`
+    fi
     if [ -x "$JAVA_HOME/jre/sh/java" ] ; then
         # IBM's JDK on AIX uses strange locations for the executables
         JAVACMD=$JAVA_HOME/jre/sh/java
@@ -132,13 +141,24 @@ Please set the JAVA_HOME variable in your environment to match the
 location of your Java installation."
     fi
 else
-    JAVACMD=java
-    if ! command -v java >/dev/null 2>&1
-    then
-        die "ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH.
+    if [ -x "/usr/libexec/java_home" ]; then
+        JAVA_HOME=`/usr/libexec/java_home -v 1.8.0_181 2>/dev/null`
+    fi
+    if [ -z "$JAVA_HOME" ] && command -v javac >/dev/null 2>&1; then
+        JAVAC_PATH=`command -v javac`
+        JAVA_HOME=`cd "$(dirname "$JAVAC_PATH")/.." && pwd`
+    fi
+    if [ -n "$JAVA_HOME" ] && [ -x "$JAVA_HOME/bin/java" ]; then
+        JAVACMD=$JAVA_HOME/bin/java
+    else
+        JAVACMD=java
+        if ! command -v java >/dev/null 2>&1
+        then
+            die "ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH.
 
 Please set the JAVA_HOME variable in your environment to match the
 location of your Java installation."
+        fi
     fi
 fi
 
