@@ -17,7 +17,7 @@ public class DemoController {
     }
 
     @GetMapping("/hello")
-    public ApiResponse<DemoResponse> hello(@RequestParam("name") String name) {
+    public ApiResponse<DemoResponse> hello(@RequestParam(value = "name", required = false) String name) {
         return ApiResponse.ok(demoService.sayHello(name));
     }
 }

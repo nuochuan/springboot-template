@@ -7,9 +7,10 @@ import org.springframework.stereotype.Service;
 public class DemoService {
 
     public DemoResponse sayHello(String name) {
-        if (name == null || name.trim().isEmpty()) {
+        String normalizedName = name == null ? null : name.trim();
+        if (normalizedName == null || normalizedName.isEmpty()) {
             throw new BusinessException("name must not be blank");
         }
-        return new DemoResponse("Hello, " + name.trim());
+        return new DemoResponse("Hello, " + normalizedName);
     }
 }

@@ -26,11 +26,11 @@ class DemoServiceTest {
 
     @Test
     void shouldRejectBlankName() {
-        assertThrows(BusinessException.class, new org.junit.jupiter.api.function.Executable() {
-            @Override
-            public void execute() {
-                demoService.sayHello(" ");
-            }
-        });
+        assertThrows(BusinessException.class, () -> demoService.sayHello(" "));
+    }
+
+    @Test
+    void shouldRejectNullName() {
+        assertThrows(BusinessException.class, () -> demoService.sayHello(null));
     }
 }

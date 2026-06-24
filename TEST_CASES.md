@@ -11,13 +11,17 @@
 输入：
 
 ```json
-{}
+{ "name": "Noah" }
 ```
 
 期望输出：
 
 ```json
-{}
+{
+  "success": true,
+  "data": { "message": "Hello, Noah" },
+  "message": "success"
+}
 ```
 
 验证点：
@@ -29,30 +33,39 @@
 输入：
 
 ```json
-{}
+{ "name": "  Noah  " }
 ```
 
 期望输出：
 
 ```json
-{}
+{
+  "success": true,
+  "data": { "message": "Hello, Noah" },
+  "message": "success"
+}
 ```
 
 验证点：
 
-- 边界值处理正确。
+- 前后空白会被正确处理。
 
 ## 用例 3：异常场景
 
 输入：
 
 ```json
-{}
+{ "name": " " }
 ```
 
 期望输出：
 
-- 返回明确错误，或者抛出明确异常。
+```json
+{
+  "success": false,
+  "message": "name must not be blank"
+}
+```
 
 验证点：
 
@@ -69,9 +82,12 @@
 期望输出：
 
 ```json
-{}
+{
+  "success": false,
+  "message": "name must not be blank"
+}
 ```
 
 验证点：
 
-- 覆盖最容易被 AI 或开发者写错的业务规则。
+- 缺失参数和空白参数走同一条业务错误路径。

@@ -1,12 +1,12 @@
 # springboot-template
 
-这是一个通用的 Spring Boot + Java 8 + Gradle 项目，用于后端需求。
+这是一个用于后端需求交付的 Spring Boot + Java 8 + Gradle 示例项目。
 
 ## 技术栈
 
 - Java 8
 - Spring Boot 2.7.18
-- Gradle 7.x 推荐
+- Gradle 8.14.5 Wrapper
 - JUnit 5
 
 ## 项目结构
@@ -26,37 +26,29 @@ springboot-template/
 ├── scripts/
 └── src/
 ```
+## 当前实现
 
-## 如何运行测试
+- `GET /api/demo/hello?name=Noah`
+- `name` 会先 trim，再拼接成 `Hello, Noah`
+- 统一使用 `ApiResponse` 返回
+- 空值、纯空白、缺失参数会返回明确业务错误
 
-如果本机已安装 Gradle：
+## 运行测试
 
 ```bash
-gradle clean test
+GRADLE_USER_HOME=.gradle-home ./gradlew test
 ```
 
-如果你想生成 Gradle Wrapper：
+如果本机已有可用 Gradle，也可以直接运行：
 
 ```bash
-./scripts/create-wrapper.sh
+gradle test
 ```
 
-然后执行：
+## 启动应用
 
 ```bash
-./gradlew clean test
-```
-
-## 如何启动应用
-
-```bash
-gradle bootRun
-```
-
-或者生成 Wrapper 后：
-
-```bash
-./gradlew bootRun
+GRADLE_USER_HOME=.gradle-home ./gradlew bootRun
 ```
 
 启动后访问：
