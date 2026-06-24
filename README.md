@@ -1,6 +1,6 @@
 # springboot-template
 
-这是一个通用的 Spring Boot + Java 8 + Gradle 模板项目，用于快速开始限时编码任务或小型后端练习。
+这是一个通用的 Spring Boot + Java 8 + Gradle 模板项目，用于后端需求。
 
 ## 技术栈
 
@@ -11,7 +11,7 @@
 
 ## 为什么使用 Spring Boot 2.7.x
 
-Spring Boot 2.7.x 仍支持 Java 8。Spring Boot 3.x 起要求更高版本的 Java，不适合作为 Java 8 模板。
+Spring Boot 2.7.x 仍支持 Java 8。Spring Boot 3.x 起要求更高版本的 Java，不适合 Java 8。
 
 ## 推荐 Gradle 版本
 
