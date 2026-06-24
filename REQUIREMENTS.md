@@ -1,19 +1,27 @@
 # 需求说明 Weighted Routing
 
-## 目标 
+## 目标
 
 实现一个单机版加权路由 MVP。
 
 ## 任务描述
-
-> 在这里写本次任务的业务目标。
 
 系统维护一组节点，每个节点包含：
 - name：节点名称
 - weight：节点权重
 - enabled：节点是否可用
 
-每次调用 route() 时，系统返回一个可用节点。
+调用 `route()` 时，系统从可用节点中返回一个节点。
+
+## 接口定义
+
+建议实现一个服务方法：
+
+```text
+route(List<Node> nodes) : Node
+```
+
+其中 `Node` 至少包含 `name`、`weight`、`enabled` 三个字段。
 ## MVP 范围
 
 本次只实现以下核心功能：
@@ -26,16 +34,23 @@
 
 ## 输入
 
-描述接口或方法的输入字段：
+输入为节点列表，例如：
+
+```json
 [
-{"name": "A", "weight": 5, "enabled": true},
-{"name": "B", "weight": 3, "enabled": true},
-{"name": "C", "weight": 2, "enabled": true}
+  {"name": "A", "weight": 5, "enabled": true},
+  {"name": "B", "weight": 3, "enabled": true},
+  {"name": "C", "weight": 2, "enabled": true}
 ]
+```
 
 ## 输出
 
-A
+返回一个被选中的节点，例如：
+
+```json
+{"name": "A", "weight": 5, "enabled": true}
+```
 ## 硬约束
 
 - 必须本地可运行。
@@ -45,25 +60,23 @@ A
 
 ## 业务规则
 
-1. 规则一：
-2. 规则二：
-3. 规则三：
+1. `nodes` 为空、`null`，或者过滤后没有可用节点时，抛出 `IllegalStateException`。
+2. 权重小于等于 `0` 的节点不参与路由。
+3. `enabled = false` 的节点不参与路由。
+4. 路由结果按权重进行概率抽取，累计概率与权重成正比。
 
 ## 边界情况
 
 至少考虑：
 
-节点列表为空。
-
-所有节点 disabled。
-
-所有节点 weight = 0。
-
-部分节点 disabled。
-
-部分节点 weight = 0。
-
-正常权重比例场景。
+- 节点列表为空。
+- 节点列表为 `null`。
+- 所有节点 `enabled = false`。
+- 所有节点 `weight <= 0`。
+- 部分节点 `enabled = false`。
+- 部分节点 `weight <= 0`。
+- 节点列表中存在 `null` 元素时应忽略该元素或按无效节点处理，最终仍需遵守“无可用节点抛异常”的规则。
+- 正常权重比例场景。
 
 ## 暂不实现
 
