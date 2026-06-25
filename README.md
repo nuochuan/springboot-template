@@ -1,6 +1,6 @@
 # springboot-template
 
-这是一个用于后端需求交付的 Spring Boot + Java 8 + Gradle 示例项目。
+这是一个 Spring Boot + Java 8 + Gradle 的年度工资薪金个人所得税计算器 MVP。
 
 ## 技术栈
 
@@ -9,40 +9,73 @@
 - Gradle 8.14.5 Wrapper
 - JUnit 5
 
-## 项目结构
-
-```text
-springboot-template/
-├── AGENTS.md
-├── REQUIREMENTS.md
-├── TEST_CASES.md
-├── PLAN.md
-├── README.md
-├── build.gradle
-├── settings.gradle
-├── gradle.properties
-├── docs/
-├── templates/
-├── scripts/
-└── src/
-```
 ## 当前实现
 
-- `GET /api/demo/hello?name=Noah`
-- `name` 会先 trim，再拼接成 `Hello, Noah`
-- 统一使用 `ApiResponse` 返回
-- 空值、纯空白、缺失参数会返回明确业务错误
+- `POST /api/tax/calculate`
+- 根据年度工资收入、年度专项扣除、年度其他扣除计算年度个人所得税。
+- 核心业务逻辑位于 `TaxCalculationService`。
+- Controller 只负责接收请求、调用 Service、包装 `ApiResponse`。
+- 使用 DTO 表达请求和响应。
+- 复用通用 `ApiResponse`、`BusinessException` 和 `GlobalExceptionHandler`。
+
+## 计算规则
+
+年度基本减除费用固定为 `60000.00` 元。
+
+```text
+应纳税所得额 = 年度工资收入 - 60000 - 年度专项扣除 - 年度其他扣除
+```
+
+当应纳税所得额小于或等于 0 时：
+
+```text
+应纳税所得额 = 0
+应纳税额 = 0
+税率 = 0
+速算扣除数 = 0
+```
+
+当应纳税所得额大于 0 时：
+
+```text
+应纳税额 = 应纳税所得额 * 适用税率 - 速算扣除数
+```
+
+金额计算使用 `BigDecimal`，最终金额保留 2 位小数并使用 `RoundingMode.DOWN`。
+
+## 接口示例
+
+请求：
+
+```bash
+curl -X POST http://localhost:8080/api/tax/calculate \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "annualSalaryIncome": 120000,
+    "annualSpecialDeduction": 12000,
+    "annualOtherDeduction": 8000
+  }'
+```
+
+响应：
+
+```json
+{
+  "success": true,
+  "data": {
+    "taxableIncome": "40000.00",
+    "taxAmount": "1480.00",
+    "taxRate": "0.10",
+    "quickDeduction": "2520.00"
+  },
+  "message": "success"
+}
+```
 
 ## 运行测试
 
 ```bash
 GRADLE_USER_HOME=.gradle-home ./gradlew test
-```
-
-如果本机已有可用 Gradle，也可以直接运行：
-
-```bash
-gradle test
 ```
 
 ## 启动应用
@@ -51,43 +84,19 @@ gradle test
 GRADLE_USER_HOME=.gradle-home ./gradlew bootRun
 ```
 
-启动后访问：
+启动后调用：
 
 ```text
-GET http://localhost:8080/api/demo/hello?name=Noah
+POST http://localhost:8080/api/tax/calculate
 ```
 
-## 每次新任务怎么用
+## 当前限制
 
-1. 修改 `REQUIREMENTS.md`，写清楚目标、输入、输出、边界和暂不实现内容。
-2. 修改 `TEST_CASES.md`，写清楚正常、边界、异常、业务陷阱测试。
-3. 修改 `PLAN.md`，拆分实现步骤。
-4. 让 AI 工具读取 `AGENTS.md`、`REQUIREMENTS.md`、`TEST_CASES.md`、`PLAN.md`。
-5. 只实现 MVP。
-6. 执行测试。
-7. 人工 review diff。
-8. 修 bug 时先复现、再根因、再最小修复。
-9. 更新 `README.md`。
-
-## 当前模板包含
-
-- 通用 Spring Boot 启动类。
-- 通用响应结构。
-- 通用业务异常。
-- 全局异常处理。
-- Demo Controller。
-- Demo Service。
-- Service 单元测试。
-- Controller Web 测试。
-- 中文需求、测试、计划模板。
-
-## 当前模板不包含
-
-- 数据库。
-- Redis。
-- MQ。
-- 登录权限。
-- 前端页面。
-- 复杂监控。
-
-这些内容只有在任务明确需要时才添加。
+- 只计算年度工资薪金个人所得税。
+- 不实现批量计算。
+- 不保存计算历史。
+- 不拆分专项附加扣除明细。
+- 不计算税收优惠、减免税、补税或退税。
+- 不支持多地区、多年度政策配置。
+- 不实现月度预扣预缴。
+- 不包含数据库、Redis、MQ、配置中心、登录权限或复杂前端。
