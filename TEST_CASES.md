@@ -84,10 +84,26 @@
 ```json
 {
   "success": false,
-  "message": "name must not be blank"
+  "message": "business error"
 }
 ```
 
 验证点：
 
 - 缺失参数和空白参数走同一条业务错误路径。
+
+## 用例 5：空输入
+
+输入：
+[]
+
+期望输出：
+
+```json
+{
+  "success": false,
+  "message": "name must not be blank"
+}
+```
+验证原因：
+- 验证空数据处理。
